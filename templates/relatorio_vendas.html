@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Relatório de Vendas</title>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #444;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f4f4f4;
+            color: #333;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f8f8;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+
+</head>
+<body>
+    <h2>Relatório de Vendas</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Data Venda</th>
+                <th>Total</th>
+                <th>Cód Cliente</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for venda in vendas %}
+            <tr>
+                <td>{{ venda[0] }}</td>
+                <td>{{ venda[1] }}</td>
+                <td>{{ venda[2] }}</td>
+                <td>{{ venda[3] }}</td>
+                <!-- Outras células conforme necessário -->
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

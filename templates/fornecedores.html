@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestão de Clientes</title>
+    <link rel="stylesheet" href="static/css/estilo.css">
+    <script src="static/js/tema.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Gestão de Fornecedores</h1>
+    </header>
+    <div class="container">
+        <a href="/inicio" class="btn">Voltar à Página Inicial</a>
+
+        <!-- Formulário para adicionar novo fornecedor -->
+        <form action="/cliente/add" method="post">
+            <input type="text" name="nome" placeholder="Fornecedor" required>
+            <input type="text" name="endereco" placeholder="Endereço" required>
+            <input type="text" name="telefone" placeholder="Telefone" required>
+            <input type="text" name="cnpj" placeholder="CNPJ" required>
+            <button type="submit" class="btn">Adicionar Fornecedor</button>
+        </form>
+
+        <!-- Tabela de fornecedores -->
+        <table>
+            <thead>
+                <tr>
+                    <th>CÓD</th>
+                    <th>Nome</th>
+                    <th>Endereço</th>
+                    <th>Telefone</th>
+                    <th>Fornecedor</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Aqui você irá iterar sobre os fornecedores do banco de dados -->
+                {% for fornecedor in fornecedores %}
+                <tr>
+                    <td>{{ fornecedor[0] }}</td>
+                    <td>{{ fornecedor[1] }}</td>
+                    <td>{{ fornecedor[2] }}</td>
+                    <td>{{ fornecedor[3] }}</td>
+                    <td>{{ fornecedor[4] }}</td>
+                    <td>
+                        <!-- Botões para editar e excluir -->
+                        <a href="javascript:void(0)" onclick="openEditModal({id: '{{ cliente[0] }}', nome: '{{ cliente[1] }}', endereco: '{{ cliente[2] }}', telefone: '{{ cliente[3] }}'})" class="btn-small">Editar</a>
+                        <a href="javascript:void(0)" onclick="confirmDelete('/cliente/delete/{{ cliente[0] }}')" class="btn-small">Excluir</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modais para edição e exclusão -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="fecharModal('deleteModal')">&times;</span>
+            <p>Tem certeza que deseja excluir este cliente?</p>
+            <a href="#" id="deleteConfirmButton" class="btn-small">Excluir</a>
+        </div>
+    </div>
+
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="fecharModal('editModal')">&times;</span>
+            <form action="/cliente/edit" method="post" id="editForm">
+                <input type="hidden" name="cliente_id" id="editClienteId">
+                <input type="text" name="nome" id="editNome" placeholder="Nome do Cliente" required>
+                <input type="text" name="endereco" id="editEndereco" placeholder="Endereço" required>
+                <input type="text" name="telefone" id="editTelefone" placeholder="Telefone" required>
+                <button type="submit" class="btn">Salvar Alterações</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function confirmDelete(url) {
+            document.getElementById('deleteConfirmButton').href = url;
+            document.getElementById('deleteModal').style.display = 'block';
+        }
+
+        function fecharModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('deleteModal')) {
+                fecharModal('deleteModal');
+            }
+            if (event.target == document.getElementById('editModal')) {
+                fecharModal('editModal');
+            }
+        }
+
+        function openEditModal(cliente) {
+            document.getElementById('editClienteId').value = cliente.id;
+            document.getElementById('editNome').value = cliente.nome;
+            document.getElementById('editEndereco').value = cliente.endereco;
+            document.getElementById('editTelefone').value = cliente.telefone;
+            document.getElementById('editModal').style.display = 'block';
+        }
+    </script>
+
+    <footer>
+        Sistema de Gestão &copy; 2024
+    </footer>
+</body>
+</html>

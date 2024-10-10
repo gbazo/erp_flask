@@ -1,0 +1,45 @@
+<!-- Exemplo básico -->
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>MINI ERP</title>
+    <link rel="stylesheet" href="static/css/estilo.css">
+    <script src="static/js/tema.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Sistema de Gestão</h1>
+    </header>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flashes">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+
+    <div class="container">
+        <form action="/cadastrar" method="post" class="login-form">
+            <label for="username">Nome de usuário:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Senha:</label>
+            <input type="password" id="password" name="password" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email">
+
+            <button type="submit">Cadastrar</button>
+        </form>
+        <a href="/configs" class="btn">Voltar</a>
+    </div>
+    <footer>
+        Sistema de Gestão &copy; 2024
+    </footer>
+</body>
+</html>

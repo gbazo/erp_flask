@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Pagamento</title>
+    <link rel="stylesheet" href="static/css/estilo.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="static/js/tema.js"></script>
+    <style>
+        @media print {
+            /* Esconde o botão de impressão */
+            #printButton, .modal .close {
+                display: none;
+            }
+    
+            /* Remove as bordas da tabela */
+            table, th, td {
+                border: none;
+            }
+    
+            /* Centraliza o conteúdo e ajusta o tamanho */
+            body {
+                margin: 0;
+                padding: 0;
+                font-size: 12px;
+            }
+    
+            /* Oculta a borda do modal e outros elementos */
+            .modal-content {
+                border: none;
+                box-shadow: none;
+                padding: 0;
+                width: 80mm;
+                height: auto;
+            }
+    
+            /* Garante que todo o conteúdo seja impresso */
+            @page {
+                margin: 0;
+            }
+        }
+    </style>
+    
+</head>
+<body>
+    <header>
+        <h1>Pagamento da Venda</h1>
+    </header>
+    
+    <div class="container">
+        <div class="resumo-venda">
+            <h2>Resumo da Venda</h2>
+            <p>Total: R$ {{ venda[1] }}</p> <!-- Corrigido para exibir o total da venda -->
+            
+            <h3>Itens Vendidos:</h3>
+            <ul>
+                {% for item in itens_venda %}
+                    <li>{{ item[0] }} - Quantidade: {{ item[1] }} - Preço: R$ {{ item[2] }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <div class="identificar-cliente">
+            <h2>Identificar Cliente (Opcional)</h2>
+            <form id="clienteForm">
+                <label for="cliente_cod">Código do Cliente:</label>
+                <input type="number" id="cliente_cod" name="cliente_cod">
+            </form>
+        </div>
+        
+        <div class="forma-pagamento">
+            <h2>Escolher Forma de Pagamento</h2>
+            <form id="pagamentoForm">
+                <div class="pagamento-opcao">
+                    <input type="radio" id="dinheiro" name="forma_pagamento" value="dinheiro" required>
+                    <label for="dinheiro">Dinheiro</label>
+                </div>
+                <div class="pagamento-opcao">
+                    <input type="radio" id="cartao_credito" name="forma_pagamento" value="cartao_credito">
+                    <label for="cartao_credito">Cartão de Crédito</label>
+                </div>
+                <div class="pagamento-opcao">
+                    <input type="radio" id="cartao_debito" name="forma_pagamento" value="cartao_debito">
+                    <label for="cartao_debito">Cartão de Débito</label>
+                </div>
+                <div class="pagamento-opcao">
+                    <input type="radio" id="pix" name="forma_pagamento" value="pix">
+                    <label for="pix">Pix</label>
+                </div>
+            </form>
+        </div>
+        
+
+        <div class="pdv-acoes">
+            <button onclick="processarPagamento()" class="btn">Processar Pagamento</button>
+            <button onclick="gerarRecibo('{{ venda[1] }}')" class="btn">Recibo de Venda</button>
+            <a href="/inicio" class="btn">Voltar</a>
+        </div>
+        
+    </div>
+
+    <!-- Modal do QR Code -->
+    <div id="modalPix" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="fecharModalPix()">&times;</span>
+            <h3>Pagamento via Pix</h3>
+            <div id="qrcode"></div> <!-- Aqui será inserido o QR Code -->
+            <p>Escaneie o QR code com seu aplicativo bancário para realizar o pagamento.</p>
+            <h3>Pix Copia e Cola</h3>
+            <textarea id="emvPix" readonly style="width: 100%; height: 100px;"></textarea>
+            <button onclick="copiarEMVPix()">Copiar Código</button>
+        </div>
+    </div>
+
+    <!-- Modal do Recibo -->
+    <div id="modalRecibo" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="fecharModalRecibo()">&times;</span>
+            <div id="reciboContent"></div>
+            <button id="printButton" onclick="window.print()">Imprimir Recibo</button>
+        </div>
+    </div>
+
+    <script>
+        function processarPagamento() {
+            var clienteCod = document.getElementById('cliente_cod').value;
+            var vendaId = {{ venda[0] | tojson | safe }};  // Venda ID
+            var formaPagamento = document.querySelector('input[name="forma_pagamento"]:checked').value;
+
+            if (formaPagamento === 'pix') {
+                // Gere o QR code e exiba o modal
+                fetch(`/gerar_qrcode_pix?venda_id=${vendaId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'sucesso') {
+                            gerarQRCode(data.qrcode);
+                            abrirModalPix();
+                        } else {
+                            alert('Erro ao gerar QR Code Pix. Tente novamente.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro ao gerar QR Code Pix:', error);
+                    });
+            } else {
+                // Outras formas de pagamento processadas normalmente
+                fetch('/processar_pagamento', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ venda_id: vendaId, cliente_cod: clienteCod, forma_pagamento: formaPagamento })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.sucesso) {
+                        alert('Pagamento processado com sucesso!');
+                        // Redirecionar ou exibir confirmação
+                    } else {
+                        alert('Erro ao processar pagamento. Tente novamente.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao processar o pagamento:', error);
+                });
+            }
+        }
+
+        function gerarQRCode(emvPix) {
+            var qrcodeContainer = document.getElementById('qrcode');
+            qrcodeContainer.innerHTML = ""; // Limpa o QR code anterior, se houver
+
+            new QRCode(qrcodeContainer, {
+                text: emvPix, // Usa o EMV Pix como o conteúdo do QR code
+                width: 300,
+                height: 300
+            });
+
+            // Insere o código EMV Pix na textarea
+            document.getElementById('emvPix').value = emvPix;
+        }
+
+        // Função para copiar o código EMV Pix
+        function copiarEMVPix() {
+            var emvPixText = document.getElementById('emvPix');
+            emvPixText.select();
+            document.execCommand("copy");
+            alert("Código Pix Copiado!");
+        }
+
+        function abrirModalPix() {
+            console.log("Tentando abrir o modal Pix.");
+            document.getElementById('modalPix').style.display = 'block';
+        }
+
+        function fecharModalPix() {
+            document.getElementById('modalPix').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            var modal = document.getElementById('modalPix');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        var empresa = {{ empresa | tojson | safe }};
+
+        function gerarRecibo() {
+            var formaPagamentoElement = document.querySelector('input[name="forma_pagamento"]:checked');
+    
+            if (!formaPagamentoElement) {
+                alert('Por favor, selecione a forma de pagamento.');
+                return;
+            }
+
+            var formaPagamento = formaPagamentoElement.value;
+            var produtos = JSON.parse(sessionStorage.getItem('produtosVendidos'));
+            var reciboContent = document.getElementById('reciboContent');
+
+            if (!produtos || produtos.length === 0) {
+                alert('Nenhum produto foi vendido.');
+                return;
+            }
+
+            var totalVenda = parseFloat(document.querySelector('p').textContent.replace('Total: R$ ', '').replace(',', '.'));
+
+            if (isNaN(totalVenda)) {
+                alert('Erro ao calcular o total da venda.');
+                return;
+            }
+
+            // Inicializa o conteúdo do recibo
+            var reciboHTML = `
+                <div style="width: 80mm; font-family: monospace; font-size: 12px;">
+                    <div style="text-align: center;">
+                        <h2>${empresa[0]}</h2>
+                        <p>${empresa[1]}</p>
+                        <p>${empresa[2]}</p>
+                        <p>CNPJ: ${empresa[3]}</p>
+                    </div>
+                    <hr>
+                    <p>Data: ${new Date().toLocaleString()}</p>
+                    <p>Recibo de Venda</p>
+                    <hr>
+                    <table style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th style="text-align: left;">Produto</th>
+                                <th style="text-align: center;">Qtd</th>
+                                <th style="text-align: right;">Preço</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            produtos.forEach(produto => {
+                var nome = produto.nome || 'Produto desconhecido';
+                var quantidade = produto.quantidade || 1;
+                var preco = produto.preco ? parseFloat(produto.preco).toFixed(2) : '0.00';
+
+                reciboHTML += `
+                    <tr>
+                        <td>${nome}</td>
+                        <td style="text-align: center;">${quantidade}</td>
+                        <td style="text-align: right;">R$ ${preco}</td>
+                    </tr>
+                `;
+            });
+
+            reciboHTML += `
+                        </tbody>
+                    </table>
+                    <hr>
+                    <p>Total: R$ ${totalVenda.toFixed(2)}</p>
+                    <p>Forma de Pagamento: ${formaPagamento}</p>
+                    <p>*** Obrigado e volte sempre ***</p>
+                </div>
+            `;
+
+            reciboContent.innerHTML = reciboHTML;
+
+            document.getElementById('modalRecibo').style.display = 'block';
+        }
+
+        function fecharModalRecibo() {
+            document.getElementById('modalRecibo').style.display = 'none';
+        }
+
+
+        function imprimirRecibo() {
+            var conteudo = document.getElementById('conteudoRecibo').innerHTML;
+            var janelaImpressao = window.open('', '', 'width=300,height=600');
+            janelaImpressao.document.write('<html><head><title>Recibo de Venda</title></head><body>');
+            janelaImpressao.document.write(conteudo);
+            janelaImpressao.document.write('</body></html>');
+            janelaImpressao.document.close();
+            janelaImpressao.print();
+        }
+
+        function abrirModalRecibo(vendaId) {
+            fetch(`/gerar_recibo?venda_id=${vendaId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'sucesso') {
+                        gerarRecibo(data.total, data.forma_pagamento, data.empresa);
+                    } else {
+                        alert('Erro ao gerar o recibo: ' + data.mensagem);
+                    }
+                })
+                .catch(error => console.error('Erro:', error));
+        }
+
+    </script>
+</body>
+</html>

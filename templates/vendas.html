@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Ponto de Venda</title>
+    <link rel="stylesheet" href="static/css/estilo.css">
+    <script src="static/js/tema.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Ponto de Venda - PDV</h1>
+    </header>
+    <div class="pdv-container">
+        <div class="pdv-inputs">
+            <input type="text" id="inputCodBarras" placeholder="Bipar código de barras aqui" autofocus>
+            <!-- Outros campos, como seleção de aluno, se necessário -->
+        </div>
+        
+        <div class="pdv-tabela">
+            <table id="tabelaItens">
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Quantidade</th>
+                        <th>Preço</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Os produtos serão adicionados aqui -->
+                </tbody>
+            </table>
+        </div>
+
+        <div id="totalVenda">Total: R$ 0,00</div>
+        <div class="pdv-acoes">
+            <button onclick="finalizarVenda()">Finalizar Venda</button>
+        </div>
+        <a href="/inicio" class="btn">Voltar</a>
+    </div>
+
+    <div id="modalVenda" class="modal">
+        <!-- Conteúdo do Modal -->
+        <div class="modal-content">
+            <span class="close" onclick="fecharModal()">&times;</span>
+            <h3>Detalhes da Venda</h3>
+            
+            <!-- Aqui serão listados os produtos -->
+            <div id="detalhesVenda">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Produto</th>
+                            <th>Quantidade</th>
+                            <th>Preço</th>
+                        </tr>
+                    </thead>
+                    <tbody id="produtosModal">
+                        <!-- Os produtos serão inseridos aqui via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Botão para confirmar a venda -->
+            <button onclick="confirmarVenda()" class="btn">Confirmar Venda</button>
+        </div>
+    </div>
+
+    <script>
+        // Captura o evento de pressionar Enter no campo de código de barras
+        document.getElementById('inputCodBarras').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                var codBarras = this.value;
+                // Enviar solicitação para o servidor Flask
+                fetch('/buscar_produto?cod_barras=' + codBarras)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Adicionar produto à tabela
+                        if (data && data.nome) {
+                            adicionarProdutoTabela(data);
+                        } else {
+                            // Tratar caso não encontre o produto
+                            alert('Produto não encontrado!');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro ao buscar o produto:', error);
+                    });
+
+                this.value = ''; // Limpar o campo após adicionar
+            }
+        });
+
+        // Função para adicionar produtos à tabela
+        function adicionarProdutoTabela(produto) {
+            var tabela = document.getElementById('tabelaItens').getElementsByTagName('tbody')[0];
+            var novaLinha = tabela.insertRow(); // Insere nova linha na tabela
+
+            // Insere células na nova linha
+            var celulaNome = novaLinha.insertCell(0);
+            var celulaQuantidade = novaLinha.insertCell(1);
+            var celulaPreco = novaLinha.insertCell(2);
+            var celulaAcoes = novaLinha.insertCell(3); // Célula para ações (ajustar quantidade, remover)
+
+            // Verifica se o ID do produto é válido
+            if (produto.id !== undefined && produto.id !== null) {
+                celulaNome.dataset.produtoId = produto.id; // Armazena o ID do produto como um atributo de dados
+            } else {
+                console.error('Erro: ID do produto não está definido!');
+                return;
+            }
+
+            // Preenche as células com dados do produto
+            celulaNome.textContent = produto.nome;
+
+            // Adiciona um input para a quantidade
+            var inputQuantidade = document.createElement('input');
+            inputQuantidade.type = 'number';
+            inputQuantidade.value = 1; // Quantidade padrão
+            inputQuantidade.min = 1; // Não permitir menos que 1
+            inputQuantidade.addEventListener('change', function() {
+                atualizarPrecoTotal();
+            });
+            celulaQuantidade.appendChild(inputQuantidade);
+
+            // Verifica se o preço é um número válido antes de formatar
+            if (!isNaN(produto.preco) && produto.preco !== null) {
+                celulaPreco.textContent = parseFloat(produto.preco).toFixed(2); // Formatar preço com duas casas decimais
+            } else {
+                celulaPreco.textContent = '0.00'; // Define como 0 se o preço for inválido
+            }
+
+            // Botão de remover
+            var btnRemover = document.createElement('button');
+            btnRemover.textContent = 'Remover';
+            btnRemover.classList.add('btn-small');
+            btnRemover.addEventListener('click', function() {
+                tabela.deleteRow(novaLinha.rowIndex); // Remove a linha da tabela
+                atualizarPrecoTotal(); // Atualiza o total
+            });
+            celulaAcoes.appendChild(btnRemover);
+
+            // Atualiza o total ao adicionar um produto
+            atualizarPrecoTotal();
+        }
+
+        // Função para atualizar o preço total
+        function atualizarPrecoTotal() {
+            var tabelaItens = document.getElementById('tabelaItens');
+            var linhas = tabelaItens.getElementsByTagName('tr');
+            var total = 0;
+
+            for (var i = 1; i < linhas.length; i++) { // Começa em 1 para pular a linha de cabeçalho
+                var celulas = linhas[i].getElementsByTagName('td');
+                var quantidade = parseInt(celulas[1].getElementsByTagName('input')[0].value, 10);
+                var preco = parseFloat(celulas[2].textContent);
+                total += quantidade * preco;
+            }
+
+            // Exibir o total (por exemplo, em um elemento na página)
+            document.getElementById('totalVenda').textContent = 'Total: R$ ' + total.toFixed(2);
+        }
+
+        // Função para abrir o modal
+        function abrirModal() {
+            document.getElementById('modalVenda').style.display = 'block';
+        }
+
+        // Função para fechar o modal
+        function fecharModal() {
+            document.getElementById('modalVenda').style.display = 'none';
+        }
+
+        // Função para finalizar a venda e abrir o modal
+        function finalizarVenda() {
+            var tabelaItens = document.getElementById('tabelaItens');
+            var linhas = tabelaItens.getElementsByTagName('tr');
+            var produtosVendidos = [];
+            var produtosModal = document.getElementById('produtosModal');
+            
+            // Limpa qualquer conteúdo anterior no modal
+            produtosModal.innerHTML = '';
+
+            for (var i = 1; i < linhas.length; i++) {
+                var celulas = linhas[i].getElementsByTagName('td');
+                var produto = {
+                    id: celulas[0].dataset.produtoId,  // Obtém o ID do produto
+                    nome: celulas[0].textContent,
+                    quantidade: parseInt(celulas[1].getElementsByTagName('input')[0].value, 10),
+                    preco: parseFloat(celulas[2].textContent)
+                };
+                produtosVendidos.push(produto);
+
+                // Adicionar produto ao modal
+                var novaLinha = produtosModal.insertRow();
+                var celulaNome = novaLinha.insertCell(0);
+                var celulaQuantidade = novaLinha.insertCell(1);
+                var celulaPreco = novaLinha.insertCell(2);
+
+                celulaNome.textContent = produto.nome;
+                celulaQuantidade.textContent = produto.quantidade;
+                celulaPreco.textContent = produto.preco.toFixed(2); // Formatar preço com duas casas decimais
+            }
+
+            // Armazenar os produtos para envio posterior
+            sessionStorage.setItem('produtosVendidos', JSON.stringify(produtosVendidos));
+
+            // Abre o modal
+            abrirModal();
+        }
+
+        // Função para confirmar a venda no modal
+        function confirmarVenda() {
+            var produtosVendidos = JSON.parse(sessionStorage.getItem('produtosVendidos'));
+
+            fetch('/finalizar_venda', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ produtos: produtosVendidos })
+            })
+            .then(response => response.json())
+            .then(data => {
+                fecharModal();
+                
+                if (data.sucesso) {
+                    // Redireciona para a página de pagamento com o ID da venda
+                    window.location.href = '/pagamento?venda_id=' + data.venda_id;
+                } else {
+                    alert('Erro ao finalizar a venda. Tente novamente.');
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao finalizar a venda:', error);
+                fecharModal();
+            });
+        }
+
+        // Fechar o modal ao clicar fora dele
+        window.onclick = function(event) {
+            var modal = document.getElementById('modalVenda');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>

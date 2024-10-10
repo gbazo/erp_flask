@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+
+<html lang="pt" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>ERP Flask documentation &#8212; Documentação ERP Flask 1</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=c058f7c8" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=60b0c1ac"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/translations.js?v=5f54a428"></script>
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Pesquisar" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="erp-flask-documentation">
+<h1>ERP Flask documentation<a class="headerlink" href="#erp-flask-documentation" title="Link to this heading">¶</a></h1>
+<p>Add your content using <code class="docutils literal notranslate"><span class="pre">reStructuredText</span></code> syntax. See the
+<a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html">reStructuredText</a>
+documentation for details.</p>
+<div class="toctree-wrapper compound">
+</div>
+<p id="module-app">Este módulo define o aplicativo Flask para um sistema de gestão, incluindo rotas para autenticação, 
+gestão de inventário, clientes, vendas, relatórios, configurações e backup.</p>
+<p>O aplicativo usa MySQL para armazenamento de dados e Bcrypt para hashing de senhas. 
+Também utiliza Flask-WeasyPrint para geração de PDFs.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.add_cliente">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">add_cliente</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.add_cliente" title="Link to this definition">¶</a></dt>
+<dd><p>Adiciona um novo cliente ao banco de dados.</p>
+<p>Esta função processa a adição de um novo cliente ao sistema:</p>
+<ul class="simple">
+<li><p>Recebe os dados do formulário submetido via POST, incluindo nome, endereço e telefone do cliente.</p></li>
+<li><p>Insere um novo registro na tabela <cite>clientes</cite> do banco de dados com as informações fornecidas.</p></li>
+<li><p>Redireciona o usuário de volta para a página de clientes após a adição bem-sucedida.</p></li>
+</ul>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>redirect: Redireciona para a página de clientes (<cite>url_for(“clientes”)</cite>) após a inserção bem-sucedida do novo cliente.</p>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Realiza uma inserção no banco de dados, adicionando um novo registro à tabela <cite>clientes</cite>.</p></li>
+<li><p>Modifica o estado do banco de dados ao adicionar o novo cliente.</p></li>
+</ul>
+</dd>
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p>Possíveis falhas incluem problemas de conexão com o banco de dados ou falhas na execução da inserção SQL. Essas exceções não são tratadas explicitamente na função.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.add_produto">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">add_produto</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.add_produto" title="Link to this definition">¶</a></dt>
+<dd><p>Adiciona um novo produto ao inventário.</p>
+<p>Esta função permite que usuários autenticados adicionem novos produtos ao inventário do sistema:</p>
+<ul class="simple">
+<li><p>Verifica se o usuário está autenticado. Se não estiver, redireciona para a página de login.</p></li>
+<li><p>Recebe os dados do produto a partir do formulário submetido via POST, incluindo nome, quantidade, preço e código de barras.</p></li>
+<li><p>Insere o novo produto no banco de dados, armazenando as informações fornecidas.</p></li>
+<li><p>Redireciona o usuário de volta para a página de inventário após a inserção bem-sucedida.</p></li>
+</ul>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>redirect: Redireciona para a página de inventário (<cite>url_for(“inventario”)</cite>) após a adição bem-sucedida do produto. Redireciona para a página de login (<cite>url_for(“login”)</cite>) se o usuário não estiver autenticado.</p>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Realiza uma inserção no banco de dados para armazenar as informações do novo produto.</p></li>
+<li><p>Modifica o estado do banco de dados ao adicionar um novo registro na tabela <cite>produtos</cite>.</p></li>
+</ul>
+</dd>
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p>Possíveis falhas incluem problemas de conexão com o banco de dados ou falhas na execução da inserção SQL. Essas exceções não são tratadas explicitamente na função.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.buscar_produto">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">buscar_produto</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.buscar_produto" title="Link to this definition">¶</a></dt>
+<dd><p>Busca um produto pelo código de barras e retorna suas informações.</p>
+<p>Esta função permite que um usuário autenticado busque um produto específico no banco de dados usando seu código de barras:</p>
+<ul class="simple">
+<li><p>Verifica se o usuário está autenticado. Se não estiver, redireciona para a página de login.</p></li>
+<li><p>Recebe o código de barras como um argumento de consulta na URL (<cite>cod_barras</cite>).</p></li>
+<li><p>Realiza uma consulta no banco de dados para buscar o produto correspondente ao código de barras fornecido.</p></li>
+<li><p>Retorna as informações do produto em formato JSON, incluindo ID, nome e preço.</p></li>
+<li><p>Se o produto não for encontrado, retorna uma mensagem de erro com um código de status HTTP 404.</p></li>
+</ul>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>jsonify: Um JSON contendo o ID, nome e preço do produto se encontrado. Caso contrário, retorna um JSON com uma mensagem de erro e um código de status 404.</p>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Realiza uma consulta ao banco de dados para buscar informações sobre o produto.</p></li>
+</ul>
+</dd>
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p>Possíveis falhas incluem problemas de conexão com o banco de dados ou falhas na execução da consulta SQL. Essas exceções não são tratadas explicitamente na função.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.cadastrar">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">cadastrar</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.cadastrar" title="Link to this definition">¶</a></dt>
+<dd><p>Permite o cadastro de novos usuários no sistema.</p>
+<p>Esta função gerencia o fluxo de registro de novos usuários. Está disponível apenas para usuários autenticados:</p>
+<ul class="simple">
+<li><p>Em uma requisição GET, a função renderiza o formulário de cadastro de novos usuários.</p></li>
+<li><dl class="simple">
+<dt>Em uma requisição POST, a função processa os dados enviados pelo formulário:</dt><dd><ol class="arabic simple">
+<li><p>Verifica se o usuário está autenticado. Se não estiver, redireciona para a página de login.</p></li>
+<li><p>Coleta o nome de usuário, senha e email enviados pelo formulário.</p></li>
+<li><p>Gera um hash seguro para a senha usando bcrypt.</p></li>
+<li><p>Insere o novo usuário no banco de dados com o nome de usuário, hash da senha e email.</p></li>
+<li><p>Confirma o cadastro com uma mensagem de sucesso e redireciona o usuário para a página de login.</p></li>
+</ol>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>render_template: Renderiza o template <cite>cadastrar.html</cite> para exibir o formulário de cadastro.
+redirect: Redireciona para a página de login (<cite>url_for(“login”)</cite>) se o cadastro for bem-sucedido ou se o usuário não estiver autenticado.</p>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Modifica o banco de dados ao inserir um novo registro na tabela <cite>usuarios</cite>.</p></li>
+<li><p>Gera um hash seguro para a senha do usuário usando bcrypt.</p></li>
+<li><p>Exibe uma mensagem flash de sucesso após o cadastro.</p></li>
+</ul>
+</dd>
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p>Possíveis falhas incluem problemas de conexão com o banco de dados, falhas na inserção de dados ou na geração do hash da senha. Essas exceções não são tratadas explicitamente na função.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.carregar_configuracoes">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">carregar_configuracoes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.carregar_configuracoes" title="Link to this definition">¶</a></dt>
+<dd><p>Carrega as configurações do sistema, como tema e cor.</p>
+<p>Esta função busca as configurações atuais do sistema no banco de dados, especificamente a configuração relacionada ao tema:</p>
+<ul class="simple">
+<li><p>Realiza uma consulta no banco de dados para recuperar o valor e a cor associados à chave “tema”.</p></li>
+<li><p>Se a configuração for encontrada, retorna um JSON contendo as informações do tema.</p></li>
+<li><p>Se a configuração não for encontrada, retorna um JSON com <cite>tema</cite> definido como <cite>None</cite>.</p></li>
+</ul>
+<dl class="simple">
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>jsonify: Um JSON contendo as configurações atuais do sistema:</dt><dd><ul class="simple">
+<li><p>“tema”: Um dicionário com as chaves “valor” e “cor”, contendo as configurações do tema.</p></li>
+<li><p>Se a configuração não existir, retorna <cite>{“tema”: None}</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Realiza uma consulta ao banco de dados para recuperar as configurações do sistema.</p></li>
+</ul>
+</dd>
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p>Possíveis falhas incluem problemas de conexão com o banco de dados ou falhas na execução da consulta SQL. Essas exceções não são tratadas explicitamente na função, mas resultariam em um erro do servidor.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.carregar_empresa">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">carregar_empresa</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.carregar_empresa" title="Link to this definition">¶</a></dt>
+<dd><p>Carrega as informações da empresa do banco de dados.</p>
+<p>Esta função recupera as informações da empresa, como nome, CNPJ, endereço, telefone e email, e as retorna em formato JSON:</p>
+<ul class="simple">
+<li><p>Realiza uma consulta ao banco de dados para obter o registro da empresa.</p></li>
+<li><p>Se os dados da empresa forem encontrados, retorna um JSON contendo as informações da empresa.</p></li>
+<li><p>Se nenhum dado for encontrado, retorna um JSON com valor <cite>None</cite>.</p></li>
+</ul>
+<dl class="simple">
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>jsonify: Um JSON contendo as informações da empresa:</dt><dd><ul class="simple">
+<li><p>“nome”: Nome da empresa.</p></li>
+<li><p>“cnpj”: CNPJ da empresa.</p></li>
+<li><p>“endereco”: Endereço da empresa.</p></li>
+<li><p>“telefone”: Telefone da empresa.</p></li>
+<li><p>“email”: Email da empresa.</p></li>
+<li><p>Se nenhum dado for encontrado, retorna <cite>None</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Realiza uma consulta ao banco de dados para recuperar as informações da empresa.</p></li>
+</ul>
+</dd>
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p>Possíveis falhas incluem problemas de conexão com o banco de dados ou falhas na execução da consulta SQL. Essas exceções não são tratadas explicitamente na função, mas resultariam em um erro do servidor.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.clientes">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">clientes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.clientes" title="Link to this definition">¶</a></dt>
+<dd><p>Exibe a página de clientes com a lista de todos os clientes cadastrados no sistema.</p>
+<p>Esta função é responsável por apresentar uma lista de todos os clientes registrados no banco de dados. A funcionalidade de visualização de clientes está disponível apenas para usuários autenticados:</p>
+<ul class="simple">
+<li><p>Verifica se o usuário está autenticado. Se não estiver, redireciona para a página de login.</p></li>
+<li><p>Realiza uma consulta ao banco de dados para recuperar todos os registros da tabela <cite>clientes</cite>.</p></li>
+<li><p>Renderiza a página de clientes, passando a lista de clientes para o template.</p></li>
+</ul>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>render_template: Renderiza o template <cite>clientes.html</cite>, que exibe a lista de clientes cadastrados.
+redirect: Redireciona para a página de login (<cite>url_for(“login”)</cite>) se o usuário não estiver autenticado.</p>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Realiza uma consulta ao banco de dados para recuperar informações sobre os clientes.</p></li>
+</ul>
+</dd>
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p>Possíveis falhas incluem problemas de conexão com o banco de dados ou falhas na execução da consulta SQL. Estas exceções não são tratadas explicitamente na função.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.configs">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">configs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.configs" title="Link to this definition">¶</a></dt>
+<dd><p>Exibe a página de configurações da aplicação.</p>
+<p>Esta função é responsável por apresentar a interface de configurações, onde os usuários autenticados podem ajustar as preferências e configurações do sistema:</p>
+<ul class="simple">
+<li><p>Verifica se o usuário está autenticado. Se não estiver, redireciona para a página de login.</p></li>
+<li><p>Renderiza a página de configurações, fornecendo ao usuário acesso às diversas opções de configuração disponíveis.</p></li>
+</ul>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>render_template: Renderiza o template <cite>configs.html</cite>, que exibe a interface de configurações.
+redirect: Redireciona para a página de login (<cite>url_for(“login”)</cite>) se o usuário não estiver autenticado.</p>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Nenhum efeito colateral direto, além do redirecionamento do usuário, se necessário.</p></li>
+</ul>
+</dd>
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p>Não há tratamento explícito de exceções nesta função, mas falhas na renderização do template ou problemas de sessão podem causar erros de servidor.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.delete_cliente">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">delete_cliente</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cliente_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.delete_cliente" title="Link to this definition">¶</a></dt>
+<dd><p>Exclui um cliente do banco de dados.</p>
+<p>Esta função permite que um cliente seja removido do sistema, baseado em seu ID:</p>
+<ul class="simple">
+<li><p>Recebe o ID do cliente a ser excluído a partir do parâmetro da URL.</p></li>
+<li><p>Executa uma operação de exclusão no banco de dados, removendo o cliente correspondente ao ID fornecido.</p></li>
+<li><p>Redireciona o usuário de volta para a página de clientes após a exclusão bem-sucedida.</p></li>
+</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><p>cliente_id (int): ID do cliente a ser excluído.</p>
+</dd>
+<dt>Returns:</dt><dd><p>redirect: Redireciona para a página de clientes (<cite>url_for(“clientes”)</cite>) após a exclusão bem-sucedida.</p>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Realiza uma exclusão no banco de dados, removendo um registro da tabela <cite>clientes</cite>.</p></li>
+<li><p>Modifica o estado do banco de dados ao excluir o registro correspondente.</p></li>
+</ul>
+</dd>
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p>Possíveis falhas incluem problemas de conexão com o banco de dados ou falhas na execução da exclusão SQL. Essas exceções não são tratadas explicitamente na função.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.edit_cliente">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">edit_cliente</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.edit_cliente" title="Link to this definition">¶</a></dt>
+<dd><p>Edita as informações de um cliente existente no banco de dados.</p>
+<p>Esta função permite a atualização dos dados de um cliente específico:</p>
+<ul class="simple">
+<li><p>Recebe os dados atualizados do formulário submetido via POST, incluindo o ID do cliente, nome, endereço e telefone.</p></li>
+<li><p>Atualiza o registro correspondente no banco de dados com os novos valores fornecidos.</p></li>
+<li><p>Redireciona o usuário de volta para a página de clientes após a atualização bem-sucedida.</p></li>
+</ul>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>redirect: Redireciona para a página de clientes (<cite>url_for(“clientes”)</cite>) após a edição bem-sucedida do cliente.</p>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Realiza uma atualização no banco de dados, modificando o registro do cliente na tabela <cite>clientes</cite>.</p></li>
+<li><p>Modifica o estado do banco de dados ao atualizar as informações do cliente.</p></li>
+</ul>
+</dd>
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p>Possíveis falhas incluem problemas de conexão com o banco de dados ou falhas na execução da atualização SQL. Essas exceções não são tratadas explicitamente na função.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.editar_produto">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">editar_produto</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.editar_produto" title="Link to this definition">¶</a></dt>
+<dd><p>Edita os dados de um produto no inventário.</p>
+<p>Esta função permite que usuários autenticados atualizem as informações de um produto existente no inventário:</p>
+<ul class="simple">
+<li><p>Verifica se o usuário está autenticado. Se não estiver, redireciona para a página de login.</p></li>
+<li><p>Recebe os dados atualizados do produto a partir do formulário submetido via POST, incluindo ID do produto, nome, quantidade, preço e código de barras.</p></li>
+<li><p>Atualiza o registro correspondente no banco de dados com os novos valores fornecidos.</p></li>
+<li><p>Redireciona o usuário de volta para a página de inventário após a atualização bem-sucedida.</p></li>
+</ul>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>redirect: Redireciona para a página de inventário (<cite>url_for(“inventario”)</cite>) após a edição bem-sucedida do produto. Redireciona para a página de login (<cite>url_for(“login”)</cite>) se o usuário não estiver autenticado.</p>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Realiza uma atualização no banco de dados para modificar as informações de um produto existente.</p></li>
+<li><p>Modifica o estado do banco de dados ao atualizar um registro na tabela <cite>produtos</cite>.</p></li>
+</ul>
+</dd>
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p>Possíveis falhas incluem problemas de conexão com o banco de dados ou falhas na execução da atualização SQL. Essas exceções não são tratadas explicitamente na função.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.estoque_compras">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">estoque_compras</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.estoque_compras" title="Link to this definition">¶</a></dt>
+<dd><p>Renderiza a página de gestão de estoque e compras.</p>
+<p>Esta função é responsável por exibir a página que permite ao usuário visualizar e gerenciar o estoque de produtos e realizar operações relacionadas a compras.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>render_template: Renderiza o template <cite>estoque_compras.html</cite>, que contém a interface para gerenciar o estoque e as compras.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.excluir_produto">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">excluir_produto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">produto_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.excluir_produto" title="Link to this definition">¶</a></dt>
+<dd><p>Exclui um produto do inventário.</p>
+<p>Esta função permite que usuários autenticados removam um produto do inventário do sistema:</p>
+<ul class="simple">
+<li><p>Verifica se o usuário está autenticado. Se não estiver, redireciona para a página de login.</p></li>
+<li><p>Recebe o ID do produto a ser excluído a partir do parâmetro da URL.</p></li>
+<li><p>Executa uma operação de exclusão no banco de dados, removendo o produto correspondente ao ID fornecido.</p></li>
+<li><p>Redireciona o usuário de volta para a página de inventário após a exclusão bem-sucedida.</p></li>
+</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><p>produto_id (int): ID do produto a ser excluído do inventário.</p>
+</dd>
+<dt>Returns:</dt><dd><p>redirect: Redireciona para a página de inventário (<cite>url_for(“inventario”)</cite>) após a exclusão bem-sucedida. Redireciona para a página de login (<cite>url_for(“login”)</cite>) se o usuário não estiver autenticado.</p>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Realiza uma exclusão no banco de dados, removendo um registro da tabela <cite>produtos</cite>.</p></li>
+<li><p>Modifica o estado do banco de dados ao excluir o registro correspondente.</p></li>
+</ul>
+</dd>
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p>Possíveis falhas incluem problemas de conexão com o banco de dados ou falhas na execução da exclusão SQL. Essas exceções não são tratadas explicitamente na função.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.fazer_backup">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">fazer_backup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.fazer_backup" title="Link to this definition">¶</a></dt>
+<dd><p>Realiza o backup do banco de dados do sistema.</p>
+<p>Esta função cria um arquivo de backup do banco de dados atual, usando o comando <cite>mysqldump</cite>, e o armazena em um diretório designado para backups com um nome de arquivo que inclui um timestamp:</p>
+<ul class="simple">
+<li><p>Verifica se o diretório de backups existe; caso contrário, cria-o.</p></li>
+<li><p>Gera um nome de arquivo de backup que inclui a data e a hora atuais no formato <cite>YYYYMMDDHHMMSS</cite>.</p></li>
+<li><p>Executa o comando <cite>mysqldump</cite> para gerar o backup do banco de dados e salvar o arquivo no diretório de backups.</p></li>
+<li><p>Verifica se o arquivo de backup foi criado com sucesso.</p></li>
+<li><p>Retorna um JSON indicando o sucesso da operação e o caminho do arquivo de backup.</p></li>
+<li><p>Em caso de erro, retorna um JSON com uma mensagem de erro.</p></li>
+</ul>
+<dl class="simple">
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>jsonify: Um JSON indicando o sucesso ou falha da operação:</dt><dd><ul class="simple">
+<li><p>“status”: Indica se a operação foi bem-sucedida (“sucesso”) ou se houve uma falha (“erro”).</p></li>
+<li><p>“arquivo”: O caminho do arquivo de backup, se a operação foi bem-sucedida.</p></li>
+<li><p>“mensagem”: Uma mensagem de erro, se a operação falhou.</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Cria um diretório de backups se ele não existir.</p></li>
+<li><p>Gera um arquivo de backup no sistema de arquivos.</p></li>
+</ul>
+</dd>
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p>Possíveis falhas incluem problemas na execução do comando <cite>mysqldump</cite>, erros ao criar diretórios ou manipular arquivos, ou outras exceções não tratadas explicitamente na função. Essas exceções resultam em um JSON de erro sendo retornado.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.finalizar_venda">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">finalizar_venda</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.finalizar_venda" title="Link to this definition">¶</a></dt>
+<dd><p>Finaliza uma venda e registra os produtos vendidos no banco de dados.</p>
+<p>Esta função processa a finalização de uma venda, registrando os detalhes da transação no banco de dados:</p>
+<ul class="simple">
+<li><p>Recebe os dados da venda em formato JSON do frontend, incluindo a lista de produtos vendidos e, opcionalmente, o código do cliente.</p></li>
+<li><p>Calcula o total da venda somando os preços multiplicados pelas quantidades dos produtos.</p></li>
+<li><p>Insere o registro da venda na tabela <cite>vendas</cite> e obtém o ID gerado para a venda.</p></li>
+<li><p>Insere os detalhes de cada produto vendido na tabela <cite>itens_venda</cite>, associando-os ao ID da venda.</p></li>
+<li><p>Em caso de sucesso, a transação é confirmada (commit) e retorna um JSON indicando o sucesso da operação e o ID da venda.</p></li>
+<li><p>Em caso de erro, a transação é revertida (rollback), e um JSON com a mensagem de erro e status HTTP 500 é retornado.</p></li>
+</ul>
+<dl class="simple">
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>jsonify: Um JSON contendo:</dt><dd><ul class="simple">
+<li><p>“sucesso”: Booleano indicando se a operação foi bem-sucedida.</p></li>
+<li><p>“venda_id”: O ID da venda registrada, se bem-sucedida.</p></li>
+<li><p>“erro”: Uma mensagem de erro, se a operação falhou, com status HTTP 500.</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Realiza múltiplas operações de inserção no banco de dados, incluindo registros em <cite>vendas</cite> e <cite>itens_venda</cite>.</p></li>
+<li><p>Modifica o estado do banco de dados ao registrar a venda e os itens vendidos.</p></li>
+</ul>
+</dd>
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p>Em caso de falha, a transação é revertida e a função retorna um JSON com a descrição do erro.</p></li>
+<li><p>Possíveis falhas incluem problemas de conexão com o banco de dados, falhas na execução das inserções SQL, ou erros ao processar os dados da venda.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.fornecedores">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">fornecedores</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.fornecedores" title="Link to this definition">¶</a></dt>
+<dd><p>Renderiza a página de gerenciamento de fornecedores.</p>
+<p>Esta função é responsável por exibir a página onde o usuário pode visualizar, adicionar, editar ou remover fornecedores da base de dados.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>render_template: Renderiza o template <cite>fornecedores.html</cite>, que contém a interface para a gestão de fornecedores.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.gerar_qrcode_pix">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">gerar_qrcode_pix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.gerar_qrcode_pix" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.gerar_qrcode_pix_old">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">gerar_qrcode_pix_old</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.gerar_qrcode_pix_old" title="Link to this definition">¶</a></dt>
+<dd><p>Gera um código QR Pix para o pagamento de uma venda específica.</p>
+<p>Esta função recebe o ID de uma venda como parâmetro de consulta, busca as informações da venda no banco de dados, e gera um código QR Pix EMV conforme os dados da transação.</p>
+<ul class="simple">
+<li><p>Verifica se o ID da venda foi fornecido. Se não, retorna um erro 400.</p></li>
+<li><p>Busca o valor total da venda no banco de dados com base no ID fornecido.</p></li>
+<li><p>Se a venda não for encontrada, retorna um erro 404.</p></li>
+<li><p>Gera o código QR Pix usando os dados da venda, incluindo a chave Pix, a descrição, o nome do recebedor, a cidade, e um identificador único da transação (TXID).</p></li>
+<li><p>Formata o valor corretamente para ser utilizado na transação.</p></li>
+<li><p>Monta o código EMV Pix de acordo com as especificações e adiciona o CRC16 para validação.</p></li>
+<li><p>Retorna o código QR Pix gerado em formato JSON.</p></li>
+</ul>
+<dl class="simple">
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>jsonify: Um JSON indicando:</dt><dd><ul class="simple">
+<li><p>“status”: “sucesso” se o código QR foi gerado com sucesso, ou “erro” se ocorreu um problema.</p></li>
+<li><p>“qrcode”: O código EMV Pix gerado se a operação for bem-sucedida.</p></li>
+<li><p>“mensagem”: Uma mensagem de erro detalhada se a operação falhar.</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Realiza uma consulta ao banco de dados para recuperar o valor da venda.</p></li>
+<li><p>Gera e retorna um código QR Pix para o pagamento.</p></li>
+</ul>
+</dd>
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p>Possíveis falhas incluem problemas de conexão com o banco de dados, erros ao acessar os dados da venda, ou erros ao gerar o código EMV Pix. Essas exceções são tratadas e resultam em uma resposta de erro JSON.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.gerar_recibo">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">gerar_recibo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.gerar_recibo" title="Link to this definition">¶</a></dt>
+<dd><p>Gera os dados necessários para a criação de um recibo de venda.</p>
+<p>Esta função recebe o ID de uma venda e a forma de pagamento como parâmetros de consulta, busca as informações da venda e da empresa no banco de dados, e retorna os dados estruturados em formato JSON para gerar um recibo:</p>
+<ul class="simple">
+<li><p>Verifica se o ID da venda foi fornecido. Se não, retorna um erro 400.</p></li>
+<li><p>Realiza uma consulta no banco de dados para obter o valor total e a data da venda com base no ID fornecido.</p></li>
+<li><p>Se a venda não for encontrada, retorna um erro 404.</p></li>
+<li><p>Realiza uma consulta no banco de dados para obter as informações da empresa (nome, endereço e CNPJ).</p></li>
+<li><p>Se os dados da empresa não forem encontrados, retorna um erro 404.</p></li>
+<li><p>Retorna os dados necessários para o recibo, incluindo o total da venda, a forma de pagamento, e as informações da empresa, em formato JSON.</p></li>
+</ul>
+<dl class="simple">
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>jsonify: Um JSON contendo:</dt><dd><ul class="simple">
+<li><p>“status”: “sucesso” se os dados do recibo foram recuperados com sucesso, ou “erro” se ocorreu um problema.</p></li>
+<li><p>“total”: O valor total da venda.</p></li>
+<li><p>“forma_pagamento”: A forma de pagamento utilizada na venda.</p></li>
+<li><p>“empresa”: Um dicionário contendo as informações da empresa (nome, endereço, CNPJ).</p></li>
+<li><p>“mensagem”: Uma mensagem de erro detalhada se a operação falhar.</p></li>
+<li><p>“detalhes”: Detalhes técnicos do erro, se houver uma exceção.</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Realiza consultas ao banco de dados para recuperar os detalhes da venda e da empresa.</p></li>
+</ul>
+</dd>
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p>Possíveis falhas incluem problemas de conexão com o banco de dados, erros ao acessar os dados da venda ou da empresa. Essas exceções são tratadas e resultam em uma resposta de erro JSON.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.index">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">index</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.index" title="Link to this definition">¶</a></dt>
+<dd><p>Redireciona o usuário para a página apropriada com base no estado de autenticação.</p>
+<p>Este endpoint é utilizado como a rota raiz da aplicação e serve para determinar a página de destino do usuário dependendo de seu status de autenticação:</p>
+<ul class="simple">
+<li><p>Se o usuário já estiver autenticado (ou seja, se existir uma sessão com “username”), ele será redirecionado para a página inicial da aplicação.</p></li>
+<li><p>Se o usuário não estiver autenticado (não houver “username” na sessão), ele será redirecionado para a página de login.</p></li>
+</ul>
+<dl class="simple">
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>redirect: Um redirecionamento HTTP para:</dt><dd><ul class="simple">
+<li><p>A página inicial da aplicação (<cite>url_for(“inicio”)</cite>) se o usuário estiver autenticado.</p></li>
+<li><p>A página de login (<cite>url_for(“login”)</cite>) se o usuário não estiver autenticado.</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Nenhum efeito colateral explícito além da verificação da sessão do usuário e do redirecionamento apropriado.</p></li>
+</ul>
+</dd>
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p>Esta função assume que a sessão está configurada corretamente. Qualquer falha na configuração da sessão ou problemas com a função de redirecionamento podem causar erros inesperados.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.inicio">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">inicio</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.inicio" title="Link to this definition">¶</a></dt>
+<dd><p>Renderiza a página inicial da aplicação com as informações da empresa.</p>
+<p>Esta função é responsável por carregar e exibir a página inicial da aplicação, 
+apresentando os dados básicos da empresa armazenados no banco de dados.</p>
+<ul class="simple">
+<li><p>A função acessa o banco de dados para recuperar as informações da empresa, como nome, CNPJ, endereço, telefone e email.</p></li>
+<li><p>Essas informações são passadas para o template <cite>inicio.html</cite>, onde são exibidas ao usuário.</p></li>
+</ul>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>render_template: Renderiza o template <cite>inicio.html</cite>, fornecendo como contexto os dados da empresa recuperados do banco de dados.</p>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Realiza uma consulta ao banco de dados para buscar as informações da empresa, o que pode falhar se houver problemas na conexão com o banco de dados ou na execução da query.</p></li>
+</ul>
+</dd>
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p>Qualquer problema na conexão com o banco de dados ou na execução da consulta pode gerar exceções que não são tratadas explicitamente nesta função. Tais exceções resultariam em um erro de servidor.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.inventario">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">inventario</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.inventario" title="Link to this definition">¶</a></dt>
+<dd><p>Exibe a página de inventário com todos os produtos cadastrados no sistema.</p>
+<p>Esta função é responsável por apresentar uma lista de todos os produtos disponíveis no banco de dados. A funcionalidade de inventário está disponível apenas para usuários autenticados:</p>
+<ul class="simple">
+<li><p>Verifica se o usuário está autenticado. Se não estiver, redireciona para a página de login.</p></li>
+<li><p>Realiza uma consulta no banco de dados para recuperar todos os produtos cadastrados.</p></li>
+<li><p>Renderiza a página de inventário, passando a lista de produtos para o template.</p></li>
+</ul>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>render_template: Renderiza o template <cite>inventario.html</cite>, que exibe a lista de produtos cadastrados.
+redirect: Redireciona para a página de login (<cite>url_for(“login”)</cite>) se o usuário não estiver autenticado.</p>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Realiza uma consulta ao banco de dados para recuperar informações sobre os produtos.</p></li>
+</ul>
+</dd>
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p>Possíveis falhas incluem problemas de conexão com o banco de dados ou falhas na execução da consulta SQL. Estas exceções não são tratadas explicitamente na função.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.login">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">login</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.login" title="Link to this definition">¶</a></dt>
+<dd><p>Gerencia o processo de autenticação de usuários na aplicação.</p>
+<p>Este endpoint suporta os métodos GET e POST para lidar com o fluxo de login dos usuários.</p>
+<ul class="simple">
+<li><p>Em uma requisição GET, a função simplesmente renderiza a página de login para o usuário, permitindo que ele insira suas credenciais.</p></li>
+<li><dl class="simple">
+<dt>Em uma requisição POST, a função processa as credenciais fornecidas pelo usuário:</dt><dd><ol class="arabic simple">
+<li><p>Recebe o nome de usuário e a senha enviados pelo formulário.</p></li>
+<li><p>Verifica no banco de dados se o nome de usuário existe e se a senha fornecida corresponde ao hash armazenado.</p></li>
+<li><dl class="simple">
+<dt>Se as credenciais forem válidas:</dt><dd><ul>
+<li><p>Cria uma sessão para o usuário, armazenando seu nome de usuário e ID na sessão.</p></li>
+<li><p>Redireciona o usuário para a página inicial (ou outra página definida).</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Se as credenciais forem inválidas:</dt><dd><ul>
+<li><p>Exibe uma mensagem de erro informando que a tentativa de login falhou.</p></li>
+<li><p>Redireciona de volta para a página de login, permitindo que o usuário tente novamente.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ol>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>render_template: Retorna a página de login em requisições GET ou em caso de falha na autenticação.
+redirect: Redireciona para a página inicial em caso de sucesso na autenticação.</p>
+</dd>
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p>Nenhuma exceção específica é capturada nesta função, mas falhas na conexão com o banco de dados ou outros erros inesperados podem resultar em uma resposta de erro do servidor.</p></li>
+</ul>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Modifica a sessão do usuário no lado do servidor ao armazenar o “username” e “user_id” em caso de autenticação bem-sucedida.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.logout">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">logout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.logout" title="Link to this definition">¶</a></dt>
+<dd><p>Encerra a sessão do usuário e redireciona para a página de login.</p>
+<p>Esta função é responsável por efetuar o logout do usuário, removendo suas informações da sessão ativa. Ao encerrar a sessão, o usuário é redirecionado para a página de login.</p>
+<ul class="simple">
+<li><p>Remove o <cite>username</cite> e <cite>user_id</cite> da sessão, efetivamente desconectando o usuário.</p></li>
+<li><p>Redireciona o usuário para a página de login, onde ele pode autenticar-se novamente, se desejar.</p></li>
+</ul>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>redirect: Um redirecionamento HTTP para a página de login (<cite>url_for(“login”)</cite>).</p>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Modifica a sessão do usuário no lado do servidor ao remover as chaves “username” e “user_id”.</p></li>
+</ul>
+</dd>
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p>Se a sessão não estiver configurada corretamente ou se o redirecionamento falhar, a função pode resultar em um erro de servidor, embora não trate exceções explicitamente.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.pagamento">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">pagamento</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.pagamento" title="Link to this definition">¶</a></dt>
+<dd><p>Exibe a página de pagamento para uma venda específica.</p>
+<p>Esta função carrega os detalhes de uma venda, incluindo os itens vendidos e as informações da empresa, para exibir a página de pagamento:</p>
+<ul class="simple">
+<li><p>Recebe o ID da venda como argumento de consulta (<cite>venda_id</cite>).</p></li>
+<li><p>Verifica se o <cite>venda_id</cite> foi fornecido. Se não, retorna uma mensagem de erro 404.</p></li>
+<li><p>Carrega as informações da venda a partir do banco de dados.</p></li>
+<li><p>Carrega as informações da empresa, presumindo que a empresa tenha um ID fixo de 1.</p></li>
+<li><p>Carrega os itens vendidos associados à venda especificada.</p></li>
+<li><p>Renderiza a página de pagamento com os detalhes da venda, itens vendidos e informações da empresa.</p></li>
+</ul>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>render_template: Renderiza o template <cite>pagamento.html</cite>, que exibe os detalhes da venda, os itens vendidos e as informações da empresa.
+str, int: Retorna uma mensagem de erro e o status HTTP 404 se a venda ou os dados da empresa não forem encontrados.</p>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Realiza múltiplas consultas ao banco de dados para recuperar as informações da venda, itens vendidos, e os dados da empresa.</p></li>
+</ul>
+</dd>
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p>Possíveis falhas incluem problemas de conexão com o banco de dados ou falhas na execução das consultas SQL. Essas exceções não são tratadas explicitamente na função, mas resultariam em um erro do servidor.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.processar_pagamento">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">processar_pagamento</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.processar_pagamento" title="Link to this definition">¶</a></dt>
+<dd><p>Processa o pagamento de uma venda.</p>
+<p>Esta função recebe os dados de pagamento enviados pelo frontend e atualiza o banco de dados com as informações do pagamento para uma venda específica:</p>
+<ul class="simple">
+<li><p>Recebe os dados do pagamento em formato JSON, incluindo o ID da venda (<cite>venda_id</cite>), código do cliente (<cite>cliente_cod</cite>), e a forma de pagamento (<cite>forma_pagamento</cite>).</p></li>
+<li><p>Atualiza o registro da venda no banco de dados para incluir o código do cliente e a forma de pagamento.</p></li>
+<li><p>(Opcional) Adiciona lógica adicional para processar o pagamento conforme a forma selecionada.</p></li>
+<li><p>Confirma a transação (commit) se o processamento for bem-sucedido.</p></li>
+<li><p>Em caso de erro, a transação é revertida (rollback) e um JSON com a mensagem de erro e status HTTP 500 é retornado.</p></li>
+</ul>
+<dl class="simple">
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>jsonify: Um JSON indicando:</dt><dd><ul class="simple">
+<li><p>“sucesso”: Booleano indicando se a operação foi bem-sucedida.</p></li>
+<li><p>“erro”: Uma mensagem de erro, se a operação falhou, com status HTTP 500.</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Realiza uma atualização no banco de dados para registrar as informações do pagamento.</p></li>
+<li><p>Modifica o estado do banco de dados ao atualizar a venda com o código do cliente e a forma de pagamento.</p></li>
+</ul>
+</dd>
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p>Possíveis falhas incluem problemas de conexão com o banco de dados, falhas na execução da atualização SQL, ou erros ao processar os dados do pagamento. Essas exceções são tratadas revertendo a transação e retornando um JSON com a descrição do erro.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.relatorio_clientes">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">relatorio_clientes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.relatorio_clientes" title="Link to this definition">¶</a></dt>
+<dd><p>Gera um relatório PDF com a lista de clientes cadastrados no sistema.</p>
+<p>Esta função permite que usuários autenticados gerem um relatório em formato PDF contendo a lista completa de clientes:</p>
+<ul class="simple">
+<li><p>Verifica se o usuário está autenticado. Se não estiver, redireciona para a página de login.</p></li>
+<li><p>Realiza uma consulta ao banco de dados para recuperar todos os registros da tabela <cite>clientes</cite>.</p></li>
+<li><p>Renderiza os dados dos clientes em um template HTML específico para o relatório.</p></li>
+<li><p>Converte o HTML renderizado em um documento PDF e o retorna como resposta.</p></li>
+</ul>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>PDF: Um documento PDF gerado a partir do template <cite>relatorio_clientes.html</cite>, contendo a lista de clientes cadastrados.
+redirect: Redireciona para a página de login (<cite>url_for(“login”)</cite>) se o usuário não estiver autenticado.</p>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Realiza uma consulta ao banco de dados para recuperar informações sobre os clientes.</p></li>
+<li><p>Gera um PDF a partir do HTML renderizado, utilizando a função <cite>render_pdf</cite>.</p></li>
+</ul>
+</dd>
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p>Possíveis falhas incluem problemas de conexão com o banco de dados, falhas na renderização do template HTML, ou erros na geração do PDF. Essas exceções não são tratadas explicitamente na função.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.relatorio_inventario">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">relatorio_inventario</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.relatorio_inventario" title="Link to this definition">¶</a></dt>
+<dd><p>Gera um relatório PDF do inventário.</p>
+<p>Esta função permite que usuários autenticados gerem um relatório em formato PDF contendo a lista completa de produtos cadastrados no inventário:</p>
+<ul class="simple">
+<li><p>Verifica se o usuário está autenticado. Se não estiver, redireciona para a página de login.</p></li>
+<li><p>Recupera todos os produtos do banco de dados.</p></li>
+<li><p>Renderiza os dados do inventário em um template HTML específico para o relatório.</p></li>
+<li><p>Converte o HTML renderizado em um documento PDF e o retorna como resposta.</p></li>
+</ul>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>PDF: Um documento PDF gerado a partir do template <cite>relatorio_inventario.html</cite>, contendo a lista de produtos no inventário.
+redirect: Redireciona para a página de login (<cite>url_for(“login”)</cite>) se o usuário não estiver autenticado.</p>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Realiza uma consulta ao banco de dados para recuperar informações sobre os produtos.</p></li>
+<li><p>Gera um PDF a partir do HTML renderizado, utilizando a função <cite>render_pdf</cite>.</p></li>
+</ul>
+</dd>
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p>Possíveis falhas incluem problemas de conexão com o banco de dados, falhas na renderização do template HTML, ou erros na geração do PDF. Essas exceções não são tratadas explicitamente na função.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.relatorio_vendas">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">relatorio_vendas</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.relatorio_vendas" title="Link to this definition">¶</a></dt>
+<dd><p>Gera um relatório PDF das vendas realizadas no sistema.</p>
+<p>Esta função permite que usuários autenticados gerem um relatório em formato PDF contendo a lista de vendas realizadas, possivelmente filtradas por um intervalo de datas:</p>
+<ul class="simple">
+<li><p>Verifica se o usuário está autenticado. Se não estiver, redireciona para a página de login.</p></li>
+<li><p>Recebe os parâmetros de data de início (<cite>dataInicio</cite>) e data de fim (<cite>dataFim</cite>) como argumentos de consulta (opcionais).</p></li>
+<li><p>Se as datas forem fornecidas, filtra as vendas para incluir apenas aquelas realizadas no intervalo especificado.</p></li>
+<li><p>Realiza uma consulta ao banco de dados para recuperar as vendas com base nos critérios fornecidos.</p></li>
+<li><p>Renderiza os dados de vendas em um template HTML específico para o relatório.</p></li>
+<li><p>Converte o HTML renderizado em um documento PDF e o retorna como resposta.</p></li>
+</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><p>dataInicio (str): Data de início do filtro de vendas, no formato “YYYY-MM-DD” (opcional).
+dataFim (str): Data de fim do filtro de vendas, no formato “YYYY-MM-DD” (opcional).</p>
+</dd>
+<dt>Returns:</dt><dd><p>PDF: Um documento PDF gerado a partir do template <cite>relatorio_vendas.html</cite>, contendo a lista de vendas.
+redirect: Redireciona para a página de login (<cite>url_for(“login”)</cite>) se o usuário não estiver autenticado.</p>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Realiza uma consulta ao banco de dados para recuperar informações sobre as vendas.</p></li>
+<li><p>Gera um PDF a partir do HTML renderizado, utilizando a função <cite>render_pdf</cite>.</p></li>
+</ul>
+</dd>
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p>Possíveis falhas incluem problemas de conexão com o banco de dados, falhas na renderização do template HTML, ou erros na geração do PDF. Essas exceções não são tratadas explicitamente na função.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.relatorios">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">relatorios</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.relatorios" title="Link to this definition">¶</a></dt>
+<dd><p>Exibe a página de relatórios da aplicação.</p>
+<p>Esta função é responsável por apresentar a interface onde usuários autenticados podem visualizar e gerar relatórios sobre diversas atividades e dados no sistema.</p>
+<ul class="simple">
+<li><p>Verifica se o usuário está autenticado. Se não estiver, redireciona para a página de login.</p></li>
+<li><p>Renderiza a página de relatórios, fornecendo uma interface para o usuário acessar as funcionalidades de geração de relatórios.</p></li>
+</ul>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>render_template: Renderiza o template <cite>relatorios.html</cite>, que exibe a interface de relatórios.
+redirect: Redireciona para a página de login (<cite>url_for(“login”)</cite>) se o usuário não estiver autenticado.</p>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Nenhum efeito colateral direto, além do redirecionamento do usuário, se necessário.</p></li>
+</ul>
+</dd>
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p>Não há tratamento explícito de exceções nesta função, mas falhas na renderização do template ou problemas de sessão podem causar erros de servidor.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.resetar_configuracoes">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">resetar_configuracoes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.resetar_configuracoes" title="Link to this definition">¶</a></dt>
+<dd><p>Reseta as configurações do sistema para os valores padrão.</p>
+<p>Esta função redefine as configurações do sistema, especificamente o tema, para os valores padrão:</p>
+<ul class="simple">
+<li><p>Atualiza a configuração com a chave “tema” no banco de dados, definindo o valor para “claro” e a cor para “#4CAF50”.</p></li>
+<li><p>Confirma a transação (commit) após a atualização bem-sucedida.</p></li>
+</ul>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>jsonify: Um JSON indicando o sucesso da operação com o status <cite>sucesso</cite>.</p>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Realiza uma atualização no banco de dados, modificando a configuração do tema para seus valores padrão.</p></li>
+</ul>
+</dd>
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p>Possíveis falhas incluem problemas de conexão com o banco de dados ou falhas na execução da atualização SQL. Essas exceções não são tratadas explicitamente na função, mas resultariam em um erro do servidor.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.rh">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">rh</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.rh" title="Link to this definition">¶</a></dt>
+<dd><p>Renderiza a página de recursos humanos.</p>
+<p>Esta função é responsável por exibir a página onde o usuário pode gerenciar informações relacionadas aos funcionários, incluindo cadastro, controle de ponto, benefícios e outras funções do RH.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>render_template: Renderiza o template <cite>rh.html</cite>, que contém a interface para a gestão de recursos humanos.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.salvar_configuracoes">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">salvar_configuracoes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.salvar_configuracoes" title="Link to this definition">¶</a></dt>
+<dd><p>Salva ou atualiza as configurações do sistema, como tema e cor.</p>
+<p>Esta função recebe os dados de configuração enviados pelo frontend e insere ou atualiza as configurações no banco de dados:</p>
+<ul class="simple">
+<li><p>Recebe os dados em formato JSON, incluindo a chave da configuração (<cite>chave</cite>), o valor da configuração (<cite>valor</cite>), e a cor (<cite>cor</cite>).</p></li>
+<li><p>Insere uma nova configuração no banco de dados ou, se a chave já existir, atualiza o valor e a cor associados.</p></li>
+<li><p>Confirma a transação (commit) após a inserção ou atualização bem-sucedida.</p></li>
+</ul>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>jsonify: Um JSON indicando o sucesso da operação com o status <cite>sucesso</cite>.</p>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Realiza uma inserção ou atualização no banco de dados para armazenar ou modificar as configurações do sistema.</p></li>
+</ul>
+</dd>
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p>Possíveis falhas incluem problemas de conexão com o banco de dados ou falhas na execução da inserção ou atualização SQL. Essas exceções não são tratadas explicitamente na função, mas resultariam em um erro do servidor.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.salvar_empresa">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">salvar_empresa</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.salvar_empresa" title="Link to this definition">¶</a></dt>
+<dd><p>Salva ou atualiza as informações da empresa no banco de dados.</p>
+<p>Esta função recebe os dados da empresa enviados pelo frontend e realiza uma inserção ou atualização das informações no banco de dados:</p>
+<ul class="simple">
+<li><p>Recebe os dados em formato JSON, incluindo nome, CNPJ, endereço, telefone e email da empresa.</p></li>
+<li><p>Insere um novo registro na tabela <cite>empresa</cite> ou, se um registro com o mesmo CNPJ já existir, atualiza as informações do registro existente.</p></li>
+<li><p>Confirma a transação (commit) após a inserção ou atualização bem-sucedida.</p></li>
+</ul>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>jsonify: Um JSON indicando o sucesso da operação com o status <cite>sucesso</cite>.</p>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Realiza uma inserção ou atualização no banco de dados para armazenar ou modificar as informações da empresa.</p></li>
+</ul>
+</dd>
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p>Possíveis falhas incluem problemas de conexão com o banco de dados ou falhas na execução da inserção ou atualização SQL. Essas exceções não são tratadas explicitamente na função, mas resultariam em um erro do servidor.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.vendas">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">vendas</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#app.vendas" title="Link to this definition">¶</a></dt>
+<dd><p>Exibe a página de vendas da aplicação.</p>
+<p>Esta função é responsável por apresentar a interface de vendas, onde os usuários autenticados podem realizar operações relacionadas às vendas de produtos.</p>
+<ul class="simple">
+<li><p>Verifica se o usuário está autenticado. Se não estiver, redireciona para a página de login.</p></li>
+<li><p>Renderiza a página de vendas, permitindo que o usuário visualize e interaja com a interface de vendas.</p></li>
+</ul>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>render_template: Renderiza o template <cite>vendas.html</cite>, que exibe a interface para gerenciamento de vendas.
+redirect: Redireciona para a página de login (<cite>url_for(“login”)</cite>) se o usuário não estiver autenticado.</p>
+</dd>
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Nenhum efeito colateral direto, além do redirecionamento do usuário, se necessário.</p></li>
+</ul>
+</dd>
+<dt>Exceptions:</dt><dd><ul class="simple">
+<li><p>Não há tratamento explícito de exceções nesta função, mas falhas na renderização do template ou problemas de sessão podem causar erros de servidor.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">ERP Flask</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Ir" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navegação</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Gabriel Bazo.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.0.2</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

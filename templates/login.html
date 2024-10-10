@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="static/css/estilo.css">
+    <script src="static/js/tema.js"></script>
+</head>
+<body>
+    <header>
+        <h1>MINI ERP</h1>
+    </header>
+    <div class="container">
+        <form action="/login" method="post" class="login-form">
+            <label for="username">Nome de usuário:</label>
+            <input type="text" id="username" name="username" required>
+        
+            <label for="password">Senha:</label>
+            <input type="password" id="password" name="password" required>
+        
+            <button type="submit">Entrar</button>
+        </form>        
+    </div>
+    <footer>
+        Sistema de Gestão &copy; 2024
+    </footer>
+</body>
+</html>

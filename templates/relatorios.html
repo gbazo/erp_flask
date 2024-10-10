@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>MINI ERP</title>
+    <link rel="stylesheet" href="static/css/estilo.css">
+    <script src="static/js/tema.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Sistema de Gestão</h1>
+    </header>
+    <div class="inicio-container">
+        <a href="/relatorio_inventario" target="_blank" class="btn">Estoque</a>
+        <a href="#" class="btn" onclick="abrirModal('vendasModal')">Vendas</a>
+        <a href="/relatorio_clientes" target="_blank" class="btn">Clientes</a>
+        <a href="/relatorio_fornecedores" target="_blank" class="btn">Fornecedores</a>
+        <a href="/relatorio_pagar" target="_blank" class="btn">Contas a Pagar</a>
+        <a href="/relatorio_receber" target="_blank" class="btn">Contas a Receber</a>
+        <a href="/inicio" class="btn">Início</a>
+    </div>
+
+    <!-- Modal para Filtro de Vendas -->
+    <div id="vendasModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="fecharModal('vendasModal')">&times;</span>
+            <h2>Filtrar Relatório de Vendas</h2>
+            <form action="/relatorio_vendas" method="GET" target="_blank">
+                <label for="dataInicio">Data Início:</label>
+                <input type="date" id="dataInicio" name="dataInicio">
+                <br><br>
+                <label for="dataFim">Data Fim:</label>
+                <input type="date" id="dataFim" name="dataFim">
+                <br><br>
+                <button type="submit" class="btn">Aplicar Filtro</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        Sistema de Gestão &copy; 2024
+    </footer>
+
+    <script>
+        function abrirModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function fecharModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Fecha o modal se o usuário clicar fora dele
+        window.onclick = function(event) {
+            var modals = document.getElementsByClassName('modal');
+            for (var i = 0; i < modals.length; i++) {
+                if (event.target == modals[i]) {
+                    modals[i].style.display = "none";
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>

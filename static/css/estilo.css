@@ -1,0 +1,443 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    padding: 5px 0;
+}
+
+nav {
+    text-align: center;
+    margin: 20px 0;
+}
+
+nav a {
+    margin: 0 15px;
+    text-decoration: none;
+    color: #333;
+}
+
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px 30px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+    width: 200px; /* Define a largura fixa para todos os botões */
+}
+
+.btn:hover {
+    background-color: #45a049;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+form input, form button {
+    padding: 10px;
+    margin-right: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid #000000;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+th {
+    background-color: #4CAF50;
+    color: black;
+}
+
+.btn-small {
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+/* Estilo do Modal (fundo) */
+.modal {
+    display: none; /* Está oculto por padrão */
+    position: fixed; /* Fica fixo na tela */
+    z-index: 1; /* Fica no topo */
+    left: 0;
+    top: 0;
+    width: 100%; /* Largura total */
+    height: 100%; /* Altura total */
+    overflow: auto; /* Habilita a rolagem se necessário */
+    background-color: rgb(0,0,0); /* Cor de fundo */
+    background-color: rgba(0,0,0,0.4); /* Cor de fundo com opacidade */
+}
+
+/* Estilo do Conteúdo do Modal */
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% do topo e centralizado horizontalmente */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Pode ajustar para uma largura mais específica se necessário */
+    max-width: 400px;
+    text-align: center;
+}
+
+.modal-recibo {
+    background-color: #fff;
+    margin: auto;
+    padding: 10px;
+    border: 1px solid #888;
+    width: 80mm;
+    font-size: 12px;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.2);
+}
+
+.modal-recibo h2 {
+    font-size: 16px;
+    margin: 5px 0;
+}
+
+.modal-recibo table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.modal-recibo th, .modal-recibo td {
+    padding: 5px;
+    border-bottom: 1px solid #ddd;
+}
+
+.modal-recibo p {
+    margin: 2px 0;
+    text-align: left;
+}
+
+/* Botão de Fechar (x) */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.pdv-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+.pdv-inputs {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.pdv-inputs input {
+    padding: 10px;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.pdv-tabela {
+    margin-bottom: 20px;
+}
+
+#tabelaItens {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#tabelaItens th, #tabelaItens td {
+    text-align: left;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+.pdv-acoes {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.pdv-acoes button {
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.pdv-acoes button:hover {
+    background-color: #45a049;
+}
+
+.grid-cores {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.grid-cores div {
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+}
+
+.flashes {
+    list-style: none;
+    padding: 10px;
+    background-color: #90ee90;  /* Cor de fundo para mensagem de sucesso */
+    color: black;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+
+.login-form, .empresa-info {
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    width: 350px;
+}
+
+.login-form label {
+    margin-top: 10px;
+    display: block;
+    text-align: left;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="password"],
+input[type="email"] {
+    width: 90%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box; /* Garante que padding e border estejam incluídos na largura */
+}
+
+.login-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.login-form button:hover {
+    background-color: #45a049;
+}
+
+.cor-opcao {
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 4px;
+}
+
+.cor-opcao.selecionado {
+    border: 2px solid #000;
+}
+
+.inicio-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1; /* Faz o container crescer para ocupar o espaço restante da tela */
+    gap: 20px;
+    margin-top: 20px; /* Espaçamento extra para o primeiro botão */
+}
+
+.inicio-container .btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px 30px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+    width: 200px; /* Define uma largura fixa para todos os botões */
+}
+
+.inicio-container .btn:hover {
+    background-color: #45a049;
+}
+
+.inicio-container .empresa-info {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.inicio-container .empresa-info h2 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.inicio-container .empresa-info p {
+    margin: 5px 0;
+    color: #555;
+}
+
+.resumo-venda, .identificar-cliente, .forma-pagamento {
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.resumo-venda ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.resumo-venda ul li {
+    background-color: #e0e0e0;
+    margin: 5px 0;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+button.btn {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+button.btn:hover {
+    background-color: #45a049;
+}
+
+.botoes {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    margin-left: 10px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    border: none;
+    cursor: pointer;
+    display: inline-block; /* Para garantir que o link <a> tenha o mesmo estilo */
+}
+
+.btn:hover {
+    background-color: #45a049;
+}
+
+.forma-pagamento {
+    margin-top: 20px;
+}
+
+.pagamento-opcao {
+    display: inline-block;
+    margin: 10px;
+    cursor: pointer;
+}
+
+.pagamento-opcao input[type="radio"] {
+    display: none;
+}
+
+.pagamento-opcao label {
+    padding: 10px 20px;
+    background-color: #f1f1f1;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: background-color 0.3s, border-color 0.3s;
+    cursor: pointer;
+}
+
+.pagamento-opcao input[type="radio"]:checked + label {
+    background-color: #4CAF50;
+    border-color: #4CAF50;
+    color: white;
+}
+
+.pagamento-opcao label:hover {
+    background-color: #e0e0e0;
+    border-color: #ccc;
+}
+
+#qrcode {
+    margin: 0 auto; /* Centraliza o QR code horizontalmente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px; /* Define a altura desejada */
+    width: 300px; /* Define a largura desejada */
+}

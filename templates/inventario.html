@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestão de Inventário</title>
+    <link rel="stylesheet" href="static/css/estilo.css">
+    <script src="static/js/tema.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Gestão de Inventário</h1>
+    </header>
+    <div class="container">
+        <a href="/inicio" class="btn">Voltar à Página Inicial</a>
+        
+        <!-- Formulário para adicionar novo produto -->
+        <form action="/inventario/add" method="post">
+            <input type="text" name="nome" placeholder="Nome do Produto" required>
+            <input type="number" name="quantidade" placeholder="Quantidade" required>
+            <input type="number" name="preco" placeholder="Preço" step="0.01" required>
+            <input type="text" name="codBarras" placeholder="Cód Barras" required>
+            <button type="submit" class="btn">Adicionar Produto</button>
+        </form>
+
+        <!-- Tabela de produtos -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Quantidade</th>
+                    <th>Preço</th>
+                    <th>Cód Barras</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Aqui você irá iterar sobre os produtos do banco de dados -->
+                {% for produto in produtos %}
+                <tr>
+                    <td>{{ produto[1] }}</td>
+                    <td>{{ produto[2] }}</td>
+                    <td>{{ produto[3] }}</td>
+                    <td>{{ produto[4] }}</td>
+                    <td>
+                        <!-- Botões para editar e excluir -->
+                        <a href="javascript:void(0)" onclick="openEditModal({id: '{{ produto[0] }}', nome: '{{ produto[1] }}', quantidade: '{{ produto[2] }}', preco: '{{ produto[3] }}', codBarras: '{{ produto[4] }}'})" class="btn-small">Editar</a>
+                        <a href="javascript:void(0)" onclick="confirmDelete('/inventario/delete/{{ produto[0] }}')" class="btn-small">Excluir</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="fecharModal('deleteModal')">&times;</span>
+            <p>Tem certeza que deseja excluir este produto?</p>
+            <a href="#" id="deleteConfirmButton" class="btn-small">Excluir</a>
+        </div>
+    </div>
+
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="fecharModal('editModal')">&times;</span>
+            <form action="/inventario/edit" method="post" id="editForm">
+                <input type="hidden" name="produto_id" id="editProdutoId">
+                <input type="text" name="nome" id="editNome" placeholder="Nome do Produto" required>
+                <input type="number" name="quantidade" id="editQuantidade" placeholder="Quantidade" required>
+                <input type="number" name="preco" id="editPreco" placeholder="Preço" step="0.01" required>
+                <input type="text" name="codBarras" id="editCodBarras" placeholder="Cód Barras" required>
+                <button type="submit" class="btn">Salvar Alterações</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Quando o usuário clica no botão de excluir
+        function confirmDelete(url) {
+            document.getElementById('deleteConfirmButton').href = url;
+            document.getElementById('deleteModal').style.display = 'block';
+        }
+
+        // Função para fechar o modal
+        function fecharModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+    
+        // Fecha o modal se o usuário clicar fora dele
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('deleteModal')) {
+                fecharModal('deleteModal');
+            } else if (event.target == document.getElementById('editModal')) {
+                fecharModal('editModal');
+            }
+        }
+
+        function openEditModal(produto) {
+            document.getElementById('editProdutoId').value = produto.id;
+            document.getElementById('editNome').value = produto.nome;
+            document.getElementById('editQuantidade').value = produto.quantidade;
+            document.getElementById('editPreco').value = produto.preco;
+            document.getElementById('editCodBarras').value = produto.codBarras;
+            
+            document.getElementById('editModal').style.display = 'block';
+        }
+    </script>
+
+    <footer>
+        Sistema de Gestão &copy; 2024
+    </footer>
+</body>
+</html>

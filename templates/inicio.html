@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>MINI ERP</title>
+    <link rel="stylesheet" href="static/css/estilo.css">
+    <script src="static/js/tema.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Sistema de Gestão</h1>
+    </header>
+    <div class="inicio-container"> <!-- Aplicando a nova classe aqui -->
+        <a href="/estoque_compras" class="btn">Estoque e Compras</a>
+        <a href="/vendas" class="btn">Vendas</a>
+        <a href="/clientes" class="btn">Clientes</a>
+        <a href="/rh" class="btn">Recursos Humanos</a>
+        <a href="/financeiro" class="btn">Financeiro</a>
+        <a href="/relatorios" class="btn">Relatórios</a>
+        <a href="/configs" class="btn">Configurações</a>
+        <a href="{{ url_for('logout') }}" class="btn">Sair</a>
+
+        <!-- Informações da Empresa -->
+        {% if empresa %}
+        <div class="empresa-info">
+            <h2>Informações da Empresa</h2>
+            <p><strong>Nome:</strong> {{ empresa[0] }}</p>
+            <p><strong>CNPJ:</strong> {{ empresa[1] }}</p>
+            <p><strong>Endereço:</strong> {{ empresa[2] }}</p>
+            <p><strong>Telefone:</strong> {{ empresa[3] }}</p>
+            <p><strong>Email:</strong> {{ empresa[4] }}</p>
+        </div>
+        {% else %}
+        <p>Nenhuma informação da empresa disponível.</p>
+        {% endif %}
+    </div>
+    <footer>
+        Sistema de Gestão &copy; 2024
+    </footer>
+</body>
+</html>

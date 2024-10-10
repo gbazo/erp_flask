@@ -1,0 +1,64 @@
+Metadata-Version: 2.1
+Name: flask_weasyprint
+Version: 1.1.0
+Summary: Make PDF in your Flask app with WeasyPrint
+Keywords: html,css,pdf,converter,flask,weasyprint
+Author-email: Simon Sapin <simon.sapin@exyr.org>
+Maintainer-email: CourtBouillon <contact@courtbouillon.org>
+Requires-Python: >=3.7
+Description-Content-Type: text/x-rst
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Web Environment
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Programming Language :: Python :: Implementation :: PyPy
+Classifier: Topic :: Internet :: WWW/HTTP :: Dynamic Content
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Dist: flask >=2.3.0
+Requires-Dist: weasyprint >=53.0
+Requires-Dist: sphinx ; extra == "doc"
+Requires-Dist: sphinx_rtd_theme ; extra == "doc"
+Requires-Dist: pytest ; extra == "test"
+Requires-Dist: isort ; extra == "test"
+Requires-Dist: flake8 ; extra == "test"
+Project-URL: Changelog, https://github.com/Kozea/Flask-WeasyPrint/releases
+Project-URL: Code, https://github.com/Kozea/Flask-WeasyPrint
+Project-URL: Documentation, https://doc.courtbouillon.org/flask-weasyprint
+Project-URL: Donation, https://opencollective.com/courtbouillon
+Project-URL: Homepage, https://doc.courtbouillon.org/flask-weasyprint/
+Project-URL: Issues, https://github.com/Kozea/Flask-WeasyPrint/issues
+Provides-Extra: doc
+Provides-Extra: test
+
+Flask-WeasyPrint generates PDF files out of your Flask website thanks to
+WeasyPrint.
+
+* Free software: BSD license
+* For Python 3.8+, tested on CPython and PyPy
+* Documentation: https://doc.courtbouillon.org/flask-weasyprint
+* Changelog: https://github.com/Kozea/Flask-WeasyPrint/releases
+* Code, issues, tests: https://github.com/Kozea/Flask-WeasyPrint
+* Code of conduct: https://www.courtbouillon.org/code-of-conduct
+* Professional support: https://www.courtbouillon.org
+* Donation: https://opencollective.com/courtbouillon
+
+Flask-WeasyPrint has been created and developed by Kozea (https://kozea.fr).
+Professional support, maintenance and community management is provided by
+CourtBouillon (https://www.courtbouillon.org).
+
+Copyrights are retained by their contributors, no copyright assignment is
+required to contribute to Flask-WeasyPrint. Unless explicitly stated otherwise,
+any contribution intentionally submitted for inclusion is licensed under the
+BSD 3-clause license, without any additional terms or conditions. For full
+authorship information, see the version control history.
+

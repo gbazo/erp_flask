@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>MINI ERP</title>
+    <link rel="stylesheet" href="static/css/estilo.css">
+    <script src="static/js/tema.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Sistema de Gestão</h1>
+    </header>
+    <div class="inicio-container">
+        <a href="javascript:void(0);" class="btn" id="btnAbrirModalEmpresa">Empresa</a>
+        <a href="/cadastrar" class="btn">Usuários</a>
+        <a href="javascript:void(0);" class="btn" id="btnBackup">Fazer Backup</a>
+        <a href="/" class="btn">Outras</a>
+        <a class="btn" id="btnAbrirModalTema">Temas</a>
+        <a href="/inicio" class="btn">Início</a>
+    </div>
+
+    <!-- Modal para informações da empresa -->
+    <div id="modalEmpresa" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Cadastro de Empresa</h2>
+            <form id="formEmpresa">
+                <label for="nomeEmpresa">Nome da Empresa:</label>
+                <input type="text" id="nomeEmpresa" name="nome" required>
+                
+                <label for="cnpjEmpresa">CNPJ:</label>
+                <input type="text" id="cnpjEmpresa" name="cnpj" required>
+
+                <label for="enderecoEmpresa">Endereço:</label>
+                <input type="text" id="enderecoEmpresa" name="endereco" required>
+                
+                <label for="telefoneEmpresa">Telefone:</label>
+                <input type="text" id="telefoneEmpresa" name="telefone" required>
+
+                <label for="emailEmpresa">Email:</label>
+                <input type="email" id="emailEmpresa" name="email" required>
+                
+                <button type="submit" class="btn">Salvar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para seleção de tema -->
+    <div id="modalTema" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Escolha uma Cor</h2>
+            <div id="gridCores" class="grid-cores">
+                <!-- As cores serão adicionadas aqui -->
+            </div>
+            <h2>Escolha o Modo de Tema</h2>
+            <label>
+                <input type="radio" name="modoTema" value="claro"> Claro
+            </label>
+            <label>
+                <input type="radio" name="modoTema" value="escuro"> Escuro
+            </label>
+            <button id="btnAplicarTema" class="btn">Aplicar</button>
+            <button id="btnResetTema" class="btn">Resetar para Padrão</button>
+        </div>
+    </div>
+
+    <script>
+        let corSelecionada = '';  // Variável global para armazenar a cor selecionada
+
+        // Abrir o modal de empresa
+        document.getElementById('btnAbrirModalEmpresa').addEventListener('click', function() {
+            document.getElementById('modalEmpresa').style.display = 'block';
+            carregarDadosEmpresa();  // Carrega os dados existentes da empresa se houver
+        });
+
+        // Fechar o modal
+        document.querySelectorAll('.close').forEach(function(element) {
+            element.addEventListener('click', function() {
+                document.getElementById('modalEmpresa').style.display = 'none';
+                document.getElementById('modalTema').style.display = 'none';
+            });
+        });
+
+        document.getElementById('formEmpresa').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const dadosEmpresa = {
+                nome: document.getElementById('nomeEmpresa').value,
+                cnpj: document.getElementById('cnpjEmpresa').value,
+                endereco: document.getElementById('enderecoEmpresa').value,
+                telefone: document.getElementById('telefoneEmpresa').value,
+                email: document.getElementById('emailEmpresa').value,
+            };
+
+            // Enviar dados para o servidor
+            fetch('/salvar_empresa', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dadosEmpresa)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                document.getElementById('modalEmpresa').style.display = 'none';
+            });
+        });
+
+        function carregarDadosEmpresa() {
+            fetch('/carregar_empresa')
+                .then(response => response.json())
+                .then(data => {
+                    if (data) {
+                        document.getElementById('nomeEmpresa').value = data.nome || '';
+                        document.getElementById('cnpjEmpresa').value = data.cnpj || '';
+                        document.getElementById('enderecoEmpresa').value = data.endereco || '';
+                        document.getElementById('telefoneEmpresa').value = data.telefone || '';
+                        document.getElementById('emailEmpresa').value = data.email || '';
+                    }
+                });
+        }
+
+        // Função para aplicar máscara de CNPJ
+        function aplicarMascaraCNPJ(cnpj) {
+            cnpj = cnpj.replace(/\D/g, ""); // Remove caracteres não numéricos
+            cnpj = cnpj.replace(/^(\d{2})(\d)/, "$1.$2");
+            cnpj = cnpj.replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3");
+            cnpj = cnpj.replace(/\.(\d{3})(\d)/, ".$1/$2");
+            cnpj = cnpj.replace(/(\d{4})(\d)/, "$1-$2");
+            return cnpj;
+        }
+
+        document.getElementById('cnpjEmpresa').addEventListener('input', function() {
+            this.value = aplicarMascaraCNPJ(this.value);
+        });
+
+        // Abrir o modal de seleção de tema
+        document.getElementById('btnAbrirModalTema').addEventListener('click', function() {
+            document.getElementById('modalTema').style.display = 'block';
+        });
+
+        // Aplicar o tema selecionado
+        document.getElementById('btnAplicarTema').addEventListener('click', function() {
+            const modoTema = document.querySelector('input[name="modoTema"]:checked').value;
+
+            // Enviar para o servidor
+            fetch('/salvar_configuracoes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ chave: 'tema', valor: modoTema, cor: corSelecionada })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                document.getElementById('modalTema').style.display = 'none';
+                // Atualizar a interface com as novas configurações
+                aplicarTema(modoTema, corSelecionada);
+            });
+        });
+
+        // Botão para resetar as configurações para os valores padrões
+        document.getElementById('btnResetTema').addEventListener('click', function() {
+            fetch('/resetar_configuracoes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                aplicarTema('claro', '#4CAF50'); // Valores padrão
+                document.getElementById('modalTema').style.display = 'none';
+            });
+        });
+
+        // Carregar configurações ao carregar a página
+        window.onload = function() {
+            fetch('/carregar_configuracoes')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.tema) {
+                        aplicarTema(data.tema.valor, data.tema.cor);
+                    }
+                });
+        }
+
+        function aplicarTema(modoTema, cor) {
+            if (modoTema === 'escuro') {
+                document.body.style.backgroundColor = '#333';
+                document.body.style.color = '#FFF';
+                document.querySelector('header').style.backgroundColor = '#222';
+            } else {
+                document.body.style.backgroundColor = '#FFF';
+                document.body.style.color = '#000';
+                document.querySelector('header').style.backgroundColor = '#4CAF50';
+            }
+
+            document.querySelectorAll('.btn').forEach(btn => {
+                btn.style.backgroundColor = cor;
+            });
+        }
+
+        document.getElementById('btnBackup').addEventListener('click', function() {
+            fetch('/fazer_backup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'sucesso') {
+                    alert('Backup realizado com sucesso! Arquivo: ' + data.arquivo);
+                } else {
+                    alert('Erro ao realizar o backup: ' + data.mensagem);
+                }
+            });
+        });
+    </script>
+
+    <footer>
+        Sistema de Gestão &copy; 2024
+    </footer>
+</body>
+</html>
