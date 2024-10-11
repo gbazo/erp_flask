@@ -1113,8 +1113,8 @@ def fazer_backup():
     except Exception as e:
         return jsonify({'status': 'erro', 'mensagem': str(e)})
 
-@app.route('/gerar_qrcode_pix_old', methods=['GET'])
-def gerar_qrcode_pix_old():
+@app.route('/gerar_qrcode_pix', methods=['GET'])
+def gerar_qrcode_pix():
     """
     Gera um código QR Pix para o pagamento de uma venda específica.
 
@@ -1212,8 +1212,8 @@ def gerar_qrcode_pix_old():
         return jsonify({'status': 'erro', 'mensagem': 'Erro ao gerar QR Code Pix'}), 500
 
 # geração do pix via mercado pago
-@app.route('/gerar_qrcode_pix', methods=['GET'])
-def gerar_qrcode_pix():
+@app.route('/gerar_qrcode_pix_old', methods=['GET'])
+def gerar_qrcode_pix_old():
     venda_id = request.args.get('venda_id')
     
     if not venda_id:
